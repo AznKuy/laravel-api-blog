@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -14,6 +15,17 @@ class Post extends Model
         'user_id',
         'category_id'
     ];
+
+    protected $appends = ['is_liked'];
+
+    public function getIsLikedAttribute()
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        return $this->likes()->where('user_id', Auth::id())->exists();
+    }
 
     protected static function boot()
     {
@@ -27,7 +39,6 @@ class Post extends Model
             $post->slug = Str::slug($post->title);
         });
     }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -36,5 +47,15 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
     }
 }
