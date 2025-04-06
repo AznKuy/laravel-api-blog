@@ -85,7 +85,8 @@ class PostController extends Controller
             DB::beginTransaction();
 
             $imagePath = $this->uploadImage($request->file('image'));
-
+            
+            /**  @disregard  */
             $post = Post::create([
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),

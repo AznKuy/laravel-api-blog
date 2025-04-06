@@ -12,8 +12,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Public routes
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     // user routes
@@ -23,22 +23,28 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Post Routes
     Route::prefix('posts')->group(function () {
-        Route::get('/', [PostController::class, 'index'])->name('posts.index');
-        Route::post('/', [PostController::class, 'store'])->name('posts.store');
-        Route::get('/{post}', [PostController::class, 'show'])->name('posts.show');
-        Route::put('/{post}', [PostController::class, 'update'])->name('posts.update');
-        Route::delete('/{posts}', [PostController::class, 'destroy'])->name('posts.destroy');
+        Route::get('/', [PostController::class, 'index']);
+        Route::post('/', [PostController::class, 'store']);
+        Route::get('/{post}', [PostController::class, 'show']);
+        Route::put('/{post}', [PostController::class, 'update']);
+        Route::delete('/{posts}', [PostController::class, 'destroy']);
 
         // Like routes
-        Route::post('/{post}/like', [LikeController::class, 'like'])->name('posts.like');
-        Route::delete('/{post}/unlike', [LikeController::class, 'unlike'])->name('posts.unlike');
+        Route::post('/{post}/like', [LikeController::class, 'like']);
+        Route::delete('/{post}/unlike', [LikeController::class, 'unlike']);
 
         // Comment routes
-        Route::post('/{post}/comment', [CommentController::class, 'store'])->name('comments.store');
+        Route::get('/{post}/comments', [CommentController::class, 'index']);
+        Route::post('/{post}/comment', [CommentController::class, 'store']);
+    });
+
+    Route::prefix('comments')->group(function () {
+        Route::put('/{comment}', [CommentController::class, 'update']);
+        Route::delete('/{comment}', [CommentController::class, 'destroy']);
     });
 
 
 
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
