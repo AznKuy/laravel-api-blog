@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -43,6 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{comment}', [CommentController::class, 'destroy']);
     });
 
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'showProfile']);
+    Route::put('/profile', [ProfileController::class, 'updateProfile']);
 
 
     // Logout
