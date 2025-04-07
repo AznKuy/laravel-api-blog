@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,14 +35,22 @@ class CommentController extends Controller
         }
 
         try {
-
+            /** @disregard */
             $comment = Comment::create([
                 'user_id' => auth()->id(),
                 'post_id' => $post->id,
                 'comment' => $request->comment
             ]);
 
-            logger('Created comment', $comment->toArray()); // <- tambahkan ini
+            // trigger notification        
+            /** @disregard */
+            if ($post->user_id !== auth()->id()) {
+                Notification::create([
+                    'user_id' => $post->user_id,
+                    'type' => 'comment',
+                    'message' => auth()->user()->name . ' commented on your post',
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -72,6 +81,8 @@ class CommentController extends Controller
                 'errors' => $validated->errors()
             ], 422);
         }
+
+        /** @disregard */
 
         if ($comment->user_id !== auth()->id()) {
             return response()->json([
@@ -106,7 +117,7 @@ class CommentController extends Controller
     // Delete a Comment
     public function destroy(Comment $comment)
     {
-
+        /** @disregard */
         if ($comment->user_id !== auth()->id()) {
             return response()->json([
                 'success' => false,

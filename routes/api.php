@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/user', function (Request $request) {
@@ -15,6 +16,12 @@ Route::get('/user', function (Request $request) {
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'Berhasil'
+    ]);
+});
+
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     // user routes
@@ -47,6 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'showProfile']);
     Route::put('/profile', [ProfileController::class, 'updateProfile']);
+
+    // get all notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
 
 
     // Logout
