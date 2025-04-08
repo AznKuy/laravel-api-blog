@@ -30,17 +30,16 @@ class PostCollection extends ResourceCollection
                 'last' => $this->url($this->lastPage()),
                 'prev' => $this->previousPageUrl(),
                 'next' => $this->nextPageUrl(),
-            ]
+            ],
         ];
     }
-
 
     public function with($request)
     {
         return [
             'success' => true,
             'code' => 200,
-            'message' => 'Post retrieved successfully'
+            'message' => 'Post retrieved successfully',
         ];
     }
 }

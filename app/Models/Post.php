@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -13,14 +13,14 @@ class Post extends Model
         'content',
         'image',
         'user_id',
-        'category_id'
+        'category_id',
     ];
 
     protected $appends = ['is_liked'];
 
     public function getIsLikedAttribute()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -39,6 +39,7 @@ class Post extends Model
             $post->slug = Str::slug($post->title);
         });
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);

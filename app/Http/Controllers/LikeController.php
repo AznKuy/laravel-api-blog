@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
@@ -14,7 +13,7 @@ class LikeController extends Controller
         // Check if the user has already liked the post
         $isLiked = $post->likes()->where('user_id', Auth::id())->exists();
 
-        if (!$isLiked) {
+        if (! $isLiked) {
             $post->likes()->create([
                 'user_id' => Auth::id(),
             ]);
@@ -26,7 +25,7 @@ class LikeController extends Controller
             Notification::create([
                 'user_id' => $post->user_id,
                 'type' => 'like',
-                'message' => auth()->user()->name . ' liked your post',
+                'message' => auth()->user()->name.' liked your post',
             ]);
         }
 

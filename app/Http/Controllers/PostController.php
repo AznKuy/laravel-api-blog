@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostCollection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -19,10 +18,9 @@ class PostController extends Controller
     {
         $query = Post::with(['user', 'category']);
 
-
         // filter posts by title
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         // filter posts by category
@@ -52,7 +50,6 @@ class PostController extends Controller
             ], 404);
         }
 
-
         return new PostCollection($posts);
     }
 
@@ -60,6 +57,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         $post->load(['user', 'category']);
+
         return new PostResource($post);
     }
 
@@ -85,7 +83,7 @@ class PostController extends Controller
             DB::beginTransaction();
 
             $imagePath = $this->uploadImage($request->file('image'));
-            
+
             /**  @disregard  */
             $post = Post::create([
                 'title' => $request->title,
@@ -93,7 +91,7 @@ class PostController extends Controller
                 'content' => $request->content,
                 'image' => $imagePath,
                 'category_id' => $request->category_id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             DB::commit();
@@ -128,7 +126,7 @@ class PostController extends Controller
 
         // Validate the request
         $validated = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|unique:posts,title,' . $post->id,
+            'title' => 'required|string|max:255|unique:posts,title,'.$post->id,
             'content' => 'required|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
             'category_id' => 'required|exists:categories,id',
@@ -178,7 +176,7 @@ class PostController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update post: ' . $e->getMessage()
+                'message' => 'Failed to update post: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -201,17 +199,17 @@ class PostController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete post: ' . $e->getMessage()
+                'message' => 'Failed to delete post: '.$e->getMessage(),
             ], 500);
         }
     }
 
-
     protected function uploadImage($image)
     {
-        $fileName = time() . '.' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+        $fileName = time().'.'.Str::random(10).'.'.$image->getClientOriginalExtension();
 
         // save the image to the images folder
         $path = $image->storeAs('images', $fileName, 'public');
