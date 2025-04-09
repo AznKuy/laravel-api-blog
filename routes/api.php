@@ -16,11 +16,8 @@ Route::get('/user', function (Request $request) {
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/test', function () {
-    return response()->json([
-        'message' => 'Berhasil',
-    ]);
-});
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{post}', [PostController::class, 'show']);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -31,16 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Post Routes
     Route::prefix('posts')->group(function () {
-        Route::get('/', [PostController::class, 'index']);
         Route::post('/', [PostController::class, 'store']);
-        Route::get('/{post}', [PostController::class, 'show']);
         Route::put('/{post}', [PostController::class, 'update']);
         Route::delete('/{posts}', [PostController::class, 'destroy']);
-
         // Like routes
         Route::post('/{post}/like', [LikeController::class, 'like']);
         Route::delete('/{post}/unlike', [LikeController::class, 'unlike']);
-
         // Comment routes
         Route::get('/{post}/comments', [CommentController::class, 'index']);
         Route::post('/{post}/comment', [CommentController::class, 'store']);
